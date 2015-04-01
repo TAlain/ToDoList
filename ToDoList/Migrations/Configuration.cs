@@ -22,7 +22,7 @@ namespace ToDoList.Migrations
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser { Email = "Alain_thoen@hotmail.com", UserName = "Alain" };
+                var user = new ApplicationUser { Email = "Alain_thoen@hotmail.com"};
 
                 manager.Create(user, "password");
 

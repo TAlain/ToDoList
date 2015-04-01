@@ -11,6 +11,7 @@ namespace ToDoList.Models
     public class ApplicationUser : IdentityUser
     {
         public virtual ICollection<ToDoItem> AssignedItems { get; set; }
+        public virtual ICollection<Skill> UserSkills { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -20,7 +21,7 @@ namespace ToDoList.Models
         }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser> ,IContext
     {
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -32,6 +33,7 @@ namespace ToDoList.Models
             return new ApplicationDbContext();
         }
 
-        public DbSet<ToDoItem> ToDoItems { get; set; }
+        public virtual DbSet<ToDoItem> ToDoItems { get; set; }
+        public virtual DbSet<Skill> Skills { get; set; }
     }
 }
