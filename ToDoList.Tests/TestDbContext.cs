@@ -16,10 +16,12 @@ namespace ToDoList.Tests
             public TestDbContext()
             {
                 this.ToDoItems = new TestToDoItemDbSet();
+                this.Skills = new TestSkillDbSet();
                 this.Users = new TestDbSet<ApplicationUser>();
             }
 
             public DbSet<ToDoItem> ToDoItems { get; set; }
+            public DbSet<Skill> Skills { get; set; }
             public IDbSet<ApplicationUser> Users { get; set; }
             public int SaveChangesCount { get; private set; }
             public int SaveChanges()
@@ -113,8 +115,7 @@ namespace ToDoList.Tests
 
             IDbAsyncEnumerator<TEntity> IDbAsyncEnumerable<TEntity>.GetAsyncEnumerator()
             {
-                //return new TestDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
-                throw new NotImplementedException();
+                return new TestDbAsyncEnumerator<TEntity>(_data.GetEnumerator());
             }
         }
 
@@ -217,6 +218,15 @@ namespace ToDoList.Tests
     class TestToDoItemDbSet : TestDbSet<ToDoItem>
     {
         public override ToDoItem Find(params object[] keyValues)
+        {
+            var id = (int)keyValues.Single();
+            return this.SingleOrDefault(b => b.Id == id);
+        }
+    }
+
+    class TestSkillDbSet : TestDbSet<Skill>
+    {
+        public override Skill Find(params object[] keyValues)
         {
             var id = (int)keyValues.Single();
             return this.SingleOrDefault(b => b.Id == id);

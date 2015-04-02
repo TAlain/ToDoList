@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -17,6 +18,35 @@ namespace ToDoList.Models
         [Display(Name="Assigned User")]
         [ForeignKey("ApplicationUser_Id")]
         public virtual ApplicationUser AssignedUser { get; set; }
+
+        public virtual ICollection<Skill> ToDoSkills { get; set; }
+        public List<int> SelectedSkills { get; set; }
+
+        public ToDoItem()
+        {
+            ToDoSkills = new List<Skill>();
+            SelectedSkills = new List<int>();
+        }
+
+        public ToDoItem EditValues(ToDoItem edit, DbSet<Skill> skills)
+        {
+                ToDoSkills.Clear();
+                AddSkills(edit.SelectedSkills, skills);
+                Title = edit.Title;
+                Description = edit.Description;
+                Workstate = edit.Workstate;
+                ApplicationUser_Id = edit.ApplicationUser_Id;
+                return this;
+        }
+
+
+        public void AddSkills(List<int> selectedSkills, DbSet<Skill> skills)
+        {
+            foreach (var skillId in selectedSkills)
+            {
+                ToDoSkills.Add(skills.Find(skillId));
+            }
+        }
     }
     public enum Workstate
     {
@@ -26,4 +56,7 @@ namespace ToDoList.Models
         InProgress,
         Done
     }
+    
+
+       
 }

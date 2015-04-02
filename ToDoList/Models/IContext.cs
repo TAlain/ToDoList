@@ -12,6 +12,7 @@ namespace ToDoList.Models
     {
         DbSet<ToDoItem> ToDoItems { get; set; }
         IDbSet<ApplicationUser> Users { get; set; }
+        DbSet<Skill> Skills { get; set; }
         int SaveChanges();
         void Dispose();
         DbEntityEntry Entry(object entity);

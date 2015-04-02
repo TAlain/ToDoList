@@ -23,36 +23,63 @@
         <th>
             @Html.DisplayNameFor(model => model.Workstate)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ToDoSkills)
+        </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
+    @foreach (var item in Model)
+    {
+        <tr>
             @if (item.AssignedUser != null)
             {
-                @Html.DisplayFor(modelItem => item.AssignedUser.UserName)
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignedUser.UserName)
+
+                    @if (item.AssignedUser.UserName == User.Identity.Name)
+                    {
+                        using (Html.BeginForm("UserRelease", "ToDoItems"))
+                        {
+                            @Html.Hidden("item_id", item.Id)
+                            <input type="submit" value="Release This Item" class="btn btn-default" style="background-color:ActiveBorder" />
+                        }
+                    }
+                </td>
             }
             else
             {
-                @Html.Label("None");
+                <td>
+                    @using (Html.BeginForm("UserPickup","ToDoItems"))
+                    {
+                        @Html.Hidden("item_id", item.Id)
+                        <input type="submit" value="Pick up This Item" class="btn btn-default" style="background-color:ActiveBorder" />
+                    }
+                </td>
             }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Workstate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Workstate)
+            </td>
+            <td>
+                @foreach (var skill in item.ToDoSkills)
+                {
+                    @Html.DisplayFor(modelItem => skill.Title)
+                    @Html.Label(", ")
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

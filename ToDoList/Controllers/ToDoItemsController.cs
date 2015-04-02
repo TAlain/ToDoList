@@ -7,12 +7,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ToDoList.Models;
+using Microsoft.AspNet.Identity;
 
 namespace ToDoList.Controllers
 {
+    [Authorize]
     public class ToDoItemsController : Controller
     {
-        public IContext db { get; set; }
+        private IContext db;
 
         public ToDoItemsController() 
         {
@@ -30,6 +32,29 @@ namespace ToDoList.Controllers
         {            
             var toDoItems = db.ToDoItems.Include(t => t.AssignedUser);
             return View(toDoItems.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult UserPickup([Bind(Include="item_id")]int item_id)
+        {
+            var item = db.ToDoItems.Find(item_id);
+            item.ApplicationUser_Id = User.Identity.GetUserId();
+            db.Entry(item).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+ 
+        }
+        [HttpPost]
+        public ActionResult UserRelease([Bind(Include = "item_id")]int item_id)
+        {
+            var item = db.ToDoItems.Find(item_id);
+            item.ApplicationUser_Id = null;
+            db.Entry(item).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+
         }
 
         // GET: ToDoItems/Details/5
@@ -51,6 +76,7 @@ namespace ToDoList.Controllers
         public ActionResult Create()
         {
             ViewBag.ApplicationUser_Id = new SelectList(db.Users, "Id", "UserName");
+            ViewData["Skills"] = new MultiSelectList(db.Skills, "Id", "Title");
             return View();
         }
 
@@ -59,10 +85,13 @@ namespace ToDoList.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Description,Workstate,ApplicationUser_Id")] ToDoItem toDoItem)
+        public ActionResult Create([Bind(Include = "Id,Title,Description,Workstate,ApplicationUser_Id,SelectedSkills")] ToDoItem toDoItem)
         {
+            ViewData["Skills"] = new MultiSelectList(db.Skills, "Id", "Title", toDoItem.SelectedSkills);
             if (ModelState.IsValid)
             {
+                toDoItem.AddSkills(toDoItem.SelectedSkills, db.Skills);
+
                 db.ToDoItems.Add(toDoItem);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -84,6 +113,7 @@ namespace ToDoList.Controllers
             {
                 return HttpNotFound();
             }
+            ViewData["Skills"] = new MultiSelectList(db.Skills, "Id", "Title", toDoItem.ToDoSkills.Select(x =>  x.Id).ToArray());
             ViewBag.ApplicationUser_Id = new SelectList(db.Users, "Id", "Email", toDoItem.ApplicationUser_Id);
             return View(toDoItem);
         }
@@ -93,11 +123,23 @@ namespace ToDoList.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Description,Workstate,ApplicationUser_Id")] ToDoItem toDoItem)
+        public ActionResult Edit([Bind(Include = "Id,Title,Description,Workstate,ApplicationUser_Id,SelectedSkills")] ToDoItem toDoItem)
         {
+            ViewData["Skills"] = new MultiSelectList(db.Skills, "Id", "Title", toDoItem.SelectedSkills);
+            
             if (ModelState.IsValid)
             {
-                db.Entry(toDoItem).State = EntityState.Modified;
+                var edit = new ToDoItem(); 
+                edit = toDoItem;
+                toDoItem = db.ToDoItems.Include(i => i.ToDoSkills).SingleOrDefault(item => item.Id == toDoItem.Id); 
+                var skills= db.Skills;
+
+                if (toDoItem != null)
+                {
+                toDoItem.EditValues(edit, skills);
+                db.Entry(toDoItem).State = EntityState.Modified;                    
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

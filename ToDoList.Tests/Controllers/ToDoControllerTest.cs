@@ -19,14 +19,14 @@ namespace ToDoList.Tests.Controllers
     {
         IContext mocksetTodo;
         ToDoItemsController controller;
-        ToDoItem TodoItem;
+        ToDoItem toDoItem;
 
         [SetUp]
         public void SetUp()
         {
             mocksetTodo = new TestDbContext();
             controller = new ToDoItemsController(mocksetTodo);
-            TodoItem = new Mock<ToDoItem>().Object;
+            toDoItem = new Mock<ToDoItem>().Object;
         }
 
         #region Basic Cruds
@@ -40,11 +40,11 @@ namespace ToDoList.Tests.Controllers
         public void ToDoDetails()
         {
             //fail
-            controller.WithCallTo(c => c.Details(TodoItem.Id)).ShouldGiveHttpStatus(404);
+            controller.WithCallTo(c => c.Details(toDoItem.Id)).ShouldGiveHttpStatus(404);
 
             //save and success
-            mocksetTodo.ToDoItems.Add(TodoItem);
-            controller.WithCallTo(c => c.Details(TodoItem.Id)).ShouldRenderDefaultView().WithModel<ToDoItem>();
+            mocksetTodo.ToDoItems.Add(toDoItem);
+            controller.WithCallTo(c => c.Details(toDoItem.Id)).ShouldRenderDefaultView().WithModel<ToDoItem>();
         }
 
         [Test]//post
@@ -54,8 +54,18 @@ namespace ToDoList.Tests.Controllers
             controller.WithCallTo(c => c.Create()).ShouldRenderDefaultView();
 
             //to index if saved
-            controller.WithCallTo(c => c.Create(TodoItem)).ShouldRedirectTo(c => c.Index);
-            Assert.That(mocksetTodo.ToDoItems, Contains.Item(TodoItem));
+            controller.WithCallTo(c => c.Create(toDoItem)).ShouldRedirectTo(c => c.Index);
+            Assert.That(mocksetTodo.ToDoItems, Contains.Item(toDoItem));
+        }
+
+        [Test]//post
+        public void ToDoEdit()
+        {
+            //back to default if invalid parameter
+            controller.WithCallTo(c => c.Edit(toDoItem.Id + 1)).ShouldGiveHttpStatus(404);
+
+            //to index if saved
+            controller.WithCallTo(c => c.Edit(toDoItem)).ShouldRedirectTo(c => c.Index);
         }
         
         #endregion
