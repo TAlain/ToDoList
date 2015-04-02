@@ -32,7 +32,7 @@ namespace ToDoList.Migrations
                 manager.Create(user, "password");
                 user = new ApplicationUser { Email = "Jef@hotmail.com", UserName = "Jef" };
                 manager.Create(user, "password");
-                user = new ApplicationUser { Email = "Sarah@hotmail.com", UserName = "Sarah" };
+                user = new ApplicationUser { Email = "Annette@hotmail.com", UserName = "Annette" };
                 manager.Create(user, "password");
 
                 context.ToDoItems.AddOrUpdate(i => i.Id,

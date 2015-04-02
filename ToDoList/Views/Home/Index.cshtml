@@ -3,29 +3,30 @@
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>E2 Partners Oefening</h1>
+    <p class="lead">Een App met To Do items die zijn gelimiteerd op Skills</p></br>
+    <p class="lead">Er zijn meerdere Users, ToDo Items en Skills al geseed.. Maar je kan ze uiteraard deleten of editen alsook nieuwe bijmaaken</p>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
+    <div class="col-md-3">
+        <h2>Om In te loggen</h2>
         <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+            Registreer een nieuwe User,  of log in met een van de seeded users (Zoals Bob, Jos, Sarah.  Alle passwoorden zijn "password")
         </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="/Account/Login">Log In &raquo;</a></p>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="col-md-6">
+        <h2>ToDos</h2>
+        <p>
+            ToDos hebben een Titel en Omschrijving.  Je kan hier ook meerdere Skills op definiëren.
+            Users kunnen Items opnemen als zij de bijpassende skills bezitten, en deze op "To Do", "In Progress" of "Done" zetten.
+        </p>
+        <p><a class="btn btn-default" href="/ToDoItems/Index">Ga naar To Do's &raquo;</a></p>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="col-md-3">
+        <h2>Skills</h2>
+        <p>Skills hebben alleen een titel.  Je kan deze via "Edit" koppelen aan meerdere users. Alle users kunnen Skills toekennen, er zit geen authorisation op</p>
+        <p><a class="btn btn-default" href="/Skills/Index">Ga naar Skills &raquo;</a></p>
     </div>
 </div>

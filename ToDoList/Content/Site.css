@@ -22,3 +22,6 @@ select,
 textarea {
     max-width: 280px;
 }
+.btn-default {
+    box-shadow:rgba(0,0,0,0.4) 3px 3px;
+}

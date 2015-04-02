@@ -28,7 +28,7 @@ namespace ToDoList.Models
             SelectedSkills = new List<int>();
         }
 
-        public ToDoItem EditValues(ToDoItem edit, DbSet<Skill> skills)
+        public ToDoItem EditValues(ToDoItem edit, List<Skill> skills)
         {
                 AddSkills(edit.SelectedSkills, skills);
                 Title = edit.Title;
@@ -39,12 +39,19 @@ namespace ToDoList.Models
         }
 
 
-        public void AddSkills(List<int> selectedSkills, DbSet<Skill> skills)
+        public void AddSkills(List<int> selectedSkills, List<Skill> skills)
         {
             ToDoSkills.Clear();
             foreach (var skillId in selectedSkills)
             {
-                ToDoSkills.Add(skills.Find(skillId));
+                foreach (var skill in skills)
+                {
+                    if (skillId == skill.Id)
+                    {
+                        ToDoSkills.Add(skill);
+                    }
+                }
+                
             }
         }
     }

@@ -101,7 +101,7 @@ namespace ToDoList.Controllers
             ViewData["Skills"] = new MultiSelectList(db.Skills, "Id", "Title", toDoItem.SelectedSkills);
             if (ModelState.IsValid)
             {
-                toDoItem.AddSkills(toDoItem.SelectedSkills, db.Skills);
+                toDoItem.AddSkills(toDoItem.SelectedSkills, db.Skills.ToList());
 
                 db.ToDoItems.Add(toDoItem);
                 db.SaveChanges();
@@ -143,7 +143,7 @@ namespace ToDoList.Controllers
                 var edit = new ToDoItem(); 
                 edit = toDoItem;
                 toDoItem = db.ToDoItems.Include(i => i.ToDoSkills).SingleOrDefault(item => item.Id == toDoItem.Id); 
-                var skills= db.Skills;
+                var skills= db.Skills.ToList();
 
                 if (toDoItem != null)
                 {

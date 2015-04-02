@@ -26,7 +26,7 @@ namespace ToDoList.Tests.Controllers
         {
             mocksetTodo = new TestDbContext();
             controller = new ToDoItemsController(mocksetTodo);
-            toDoItem = new Mock<ToDoItem>().Object;
+            toDoItem = new ToDoItem();
         }
 
         #region Basic Cruds
