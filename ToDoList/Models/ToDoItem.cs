@@ -30,7 +30,6 @@ namespace ToDoList.Models
 
         public ToDoItem EditValues(ToDoItem edit, DbSet<Skill> skills)
         {
-                ToDoSkills.Clear();
                 AddSkills(edit.SelectedSkills, skills);
                 Title = edit.Title;
                 Description = edit.Description;
@@ -42,6 +41,7 @@ namespace ToDoList.Models
 
         public void AddSkills(List<int> selectedSkills, DbSet<Skill> skills)
         {
+            ToDoSkills.Clear();
             foreach (var skillId in selectedSkills)
             {
                 ToDoSkills.Add(skills.Find(skillId));

@@ -19,6 +19,14 @@ namespace ToDoList.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public ApplicationUser()
+        {
+            UserSkills = new List<Skill>();
+            AssignedItems = new List<ToDoItem>();
+        }
+
+      
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser> ,IContext

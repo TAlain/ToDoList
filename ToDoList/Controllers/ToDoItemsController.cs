@@ -15,6 +15,8 @@ namespace ToDoList.Controllers
     public class ToDoItemsController : Controller
     {
         private IContext db;
+        ToDoManager manager;
+
 
         public ToDoItemsController() 
         {
@@ -30,7 +32,7 @@ namespace ToDoList.Controllers
         // GET: ToDoItems
         public ActionResult Index()
         {            
-            var toDoItems = db.ToDoItems.Include(t => t.AssignedUser);
+            var toDoItems = db.ToDoItems.Include(i => i.AssignedUser);
             return View(toDoItems.ToList());
         }
 
@@ -38,18 +40,27 @@ namespace ToDoList.Controllers
         public ActionResult UserPickup([Bind(Include="item_id")]int item_id)
         {
             var item = db.ToDoItems.Find(item_id);
-            item.ApplicationUser_Id = User.Identity.GetUserId();
-            db.Entry(item).State = EntityState.Modified;
-            db.SaveChanges();
+            ModelState.Clear();
+            manager = new ToDoManager(db.Users.Find(User.Identity.GetUserId()));
 
-            return RedirectToAction("Index");
+            if(manager.CurrentUserPicksUp(item))
+            {
+                db.Entry(item).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError(string.Empty, "You don't have the required Skills!");
+            var toDoItems = db.ToDoItems.Include(i => i.AssignedUser);
+            return View("Index",toDoItems.ToList());
  
         }
         [HttpPost]
         public ActionResult UserRelease([Bind(Include = "item_id")]int item_id)
         {
             var item = db.ToDoItems.Find(item_id);
-            item.ApplicationUser_Id = null;
+            manager = new ToDoManager(db.Users.Find(User.Identity.GetUserId()));
+            manager.CurrentUserReleaseItem(item);
             db.Entry(item).State = EntityState.Modified;
             db.SaveChanges();
 
